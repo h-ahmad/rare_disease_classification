@@ -255,7 +255,7 @@ def test(output_path, model_name, model, dataloader, device, num_classes, is_mul
         f.write(f"AUROC: {auroc:.4f}\n")
         print(f"Metrics saved to {metrics_file}")
         
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['lung_aca', 'lung_n', 'lung_scc'])
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['colo_aca', 'colon_n'])
     disp.plot(cmap=plt.cm.Blues)
     plt.title("Confusion Matrix")
     plt.xlabel("Predicted Label")
