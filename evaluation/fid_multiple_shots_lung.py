@@ -87,16 +87,18 @@ def class_wise_fid(args, idx, transform):
 def draw_graph(csv_file):
     df = pd.read_csv(csv_file)
     shots = df['few_shot'].tolist()
-    fid_cls_1 = df['colon_aca'].tolist()
-    fid_cls_2 = df['colon_n'].tolist()
+    fid_cls_1 = df['lung_aca'].tolist()
+    fid_cls_2 = df['lung_n'].tolist()
+    fid_cls_3 = df['lung_scc'].tolist()
     fid_all = df['all'].tolist()
 
     x = np.arange(len(shots))
     width = 0.20
     fig, ax = plt.subplots(figsize=(10, 6))
-    bars1 = ax.bar(x - width, fid_cls_1, width, label='colon_aca', color='#66C2A5')
-    bars2 = ax.bar(x, fid_cls_2, width, label='colon_n', color='#FC8D62')
-    bars3 = ax.bar(x + width, fid_all, width, label='All (Dataset)', color='#8DA0CB')
+    bars1 = ax.bar(x - width, fid_cls_1, width, label='lung_aca', color='#66C2A5')
+    bars2 = ax.bar(x, fid_cls_2, width, label='lung_n', color='#FC8D62')
+    bars3 = ax.bar(x + width, fid_cls_3, width, label='lung_scc', color='grey')
+    bars4 = ax.bar(x + width + width, fid_all, width, label='All (Dataset)', color='#8DA0CB')
     ax.set_xlabel('Number of Shots (Samples used to generate synthetic data)', fontsize=12)
     ax.set_ylabel('FID Score (lower is better)', fontsize=12)
     # ax.set_title('FID Scores per Class vs Number of Shots', fontsize=14)
@@ -114,6 +116,7 @@ def draw_graph(csv_file):
     add_labels(bars1)
     add_labels(bars2)
     add_labels(bars3)
+    add_labels(bars4)
     # Optional: grid and layout adjustments
     plt.grid(axis='y', linestyle='--', alpha=0.5)
     plt.tight_layout()
@@ -125,19 +128,19 @@ if __name__ == "__main__":
     parser.add_argument('--few_shots_list', metavar='N', type=str, nargs='*', default=[2, 5, 10, 20, 50],
                         help='a list of few-shots from real images')
     parser.add_argument('--real_imgs_paths', metavar='N', type=str, nargs='*',
-                        default=['../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/colon_image_sets/',
-                                 '../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/colon_image_sets/',
-                                 '../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/colon_image_sets/',
-                                 '../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/colon_image_sets/',
-                                 '../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/colon_image_sets/'],
+                        default=['../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/lung_image_sets/',
+                                 '../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/lung_image_sets/',
+                                 '../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/lung_image_sets/',
+                                 '../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/lung_image_sets/',
+                                 '../../../../../data/rare_disease/public/lc25000_lung_colon_image_set/lung_image_sets/'],
                         help='list of paths to real images')
     parser.add_argument('--real_images_extension', type=str, default='.jpeg')
     parser.add_argument('--synthetic_imgs_paths', metavar='N', type=str, nargs='*',
-                        default=['../generation/generate/output_colon_2_shot/colon/sd2.1/gs2.0_nis50/shot2_seed0_template1_lr0.0001_ep300/train/', 
-                                 '../generation/generate/output_colon_5_shot/colon/sd2.1/gs2.0_nis50/shot5_seed0_template1_lr0.0001_ep300/train/',
-                                 '../generation/generate/output_colon_10_shot/colon/sd2.1/gs2.0_nis50/shot10_seed0_template1_lr0.0001_ep300/train/',
-                                 '../generation/generate/output_colon_20_shot/colon/sd2.1/gs2.0_nis50/shot20_seed0_template1_lr0.0001_ep300/train/',
-                                 '../generation/generate/output_colon_50_shot/colon/sd2.1/gs2.0_nis50/shot50_seed0_template1_lr0.0001_ep300/train/'], 
+                        default=['../generation/generate/output_lung_2_shot/lung/sd2.1/gs2.0_nis50/shot2_seed0_template1_lr0.0001_ep300/train/', 
+                                 '../generation/generate/output_lung_5_shot/lung/sd2.1/gs2.0_nis50/shot5_seed0_template1_lr0.0001_ep300/train/',
+                                 '../generation/generate/output_lung_10_shot/lung/sd2.1/gs2.0_nis50/shot10_seed0_template1_lr0.0001_ep300/train/',
+                                 '../generation/generate/output_lung_20_shot/lung/sd2.1/gs2.0_nis50/shot20_seed0_template1_lr0.0001_ep300/train/',
+                                 '../generation/generate/output_lung_50_shot/lung/sd2.1/gs2.0_nis50/shot50_seed0_template1_lr0.0001_ep300/train/'], 
                         help='a list of paths to synthetic images')
     parser.add_argument('--synthetic_images_extension', type=str, default='.png')
     parser.add_argument('--batch_size', type=int, default=64)
