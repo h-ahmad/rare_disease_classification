@@ -20,6 +20,7 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 import matplotlib.pyplot as plt
 import timm
 from torchvision.transforms import transforms
+from sklearn.utils.multiclass import unique_labels
 
 CLIP_MEAN=(0.48145466, 0.4578275, 0.40821073)
 CLIP_STD=(0.26862954, 0.26130258, 0.27577711)
@@ -160,10 +161,11 @@ def train(model_name, model, train_loader, validate_loader, loss_fn, optimiser, 
             loss = loss_fn(predictions, labels)
             loss.backward()
             optimiser.step()
-            scheduler.step()
+            # scheduler.step()
             train_accuracy += compute_accuracy(predictions, labels).item()
             train_loss += loss.item()
             
+        scheduler.step()
         # validation
         val_accuracy = 0.0
         val_loss = 0.0
@@ -217,13 +219,19 @@ def test(output_path, model_name, model, dataloader, device, num_classes, is_mul
             all_preds.extend(preds.cpu().numpy())
             all_probs.extend(probs.cpu().numpy())
     # Convert to numpy arrays
-    all_labels = torch.tensor(all_labels).numpy()
-    all_preds = torch.tensor(all_preds).numpy()
-    all_probs = torch.tensor(all_probs).numpy()
+    # all_labels = torch.tensor(all_labels).numpy()
+    # all_preds = torch.tensor(all_preds).numpy()
+    # all_probs = torch.tensor(all_probs).numpy()
+    all_labels = np.array(all_labels)
+    all_preds = np.array(all_preds)
+    all_probs = np.array(all_probs)
     # === Classification Metrics ===
-    f1 = f1_score(all_labels, all_preds, average='macro')
-    precision = precision_score(all_labels, all_preds, average='macro')
-    recall = recall_score(all_labels, all_preds, average='macro')
+    averaging = 'binary' 
+    if num_classes > 2:
+        averaging = 'macro'
+    f1 = f1_score(all_labels, all_preds, average=averaging)
+    precision = precision_score(all_labels, all_preds, average=averaging)
+    recall = recall_score(all_labels, all_preds, average=averaging)
     accuracy = accuracy_score(all_labels, all_preds)
     try:
         # For multiclass AUROC, we use one-vs-rest
@@ -255,7 +263,8 @@ def test(output_path, model_name, model, dataloader, device, num_classes, is_mul
         f.write(f"AUROC: {auroc:.4f}\n")
         print(f"Metrics saved to {metrics_file}")
         
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['colo_aca', 'colon_n'])
+    # disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['colo_aca', 'colon_n'])
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=unique_labels(all_labels))
     disp.plot(cmap=plt.cm.Blues)
     plt.title("Confusion Matrix")
     plt.xlabel("Predicted Label")
