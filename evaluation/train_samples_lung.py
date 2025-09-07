@@ -18,7 +18,7 @@ plt.plot(few_shot, deitb, label='Deit-B', color='red', marker='s')
 plt.plot(few_shot, clip_16, label='CLIP (ViT-B/16)', color='orange', marker='*')
 plt.plot(few_shot, clip_32, label='CLIP (ViT-B/32)', color='purple', marker='d')
 
-plt.xlabel('Synthetic training samples')
+plt.xlabel('Synthetic training samples per class')
 plt.ylabel('Accuracy')
 plt.title('')
 plt.legend()
