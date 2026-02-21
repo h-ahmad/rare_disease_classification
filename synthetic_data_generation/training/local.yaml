@@ -1,0 +1,5 @@
+fewshot_data_dir:
+    scabies: '../../../../data/rare_disease/scabies_with_bg_jpg/'
+
+model_dir:
+    sd2.1: '../../data_generation/training/model/stable-diffusion-2-1/'
